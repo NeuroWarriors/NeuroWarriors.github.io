@@ -409,7 +409,7 @@ function displayTwoWins() {
 	ctx.lineWidth = canvasWidth * (1/400);
 	ctx.textAlign = "left";
 	ctx.textBaseline="hanging"; 
-	ctx.strokeText("WINS : " + playerTwoWins, 5, 0);
+	ctx.strokeText("WINS : " + playerTwoWins, 10, 10);
 	ctx.textBaseline="alphabetic"; 
 }
 
@@ -420,7 +420,7 @@ function displayWins() {
 	ctx.lineWidth = canvasWidth * (1/400);
 	ctx.textAlign = "right";
 	ctx.textBaseline="hanging"; 
-	ctx.strokeText("WINS : " + playerOneWins, canvasWidth - 5, 0);
+	ctx.strokeText("WINS : " + playerOneWins, canvasWidth - 10, 10);
 	ctx.textBaseline="alphabetic"; 
 }
 
