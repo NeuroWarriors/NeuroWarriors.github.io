@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+  canvas {
+    border:10px solid #000000;
+    background-color: #ffffff;
+  }
+</style>
+</head>
+<body onload = "initialFirst()">
+
+<script>
+
+var gradient;
+
+var firstColor = "#9900cc";
+var midColor = "#c61aff";
+var endColor = "#9900cc";
+
+var firstTwoColor = "#009973";
+var midTwoColor = "#00e6ac";
+var endTwoColor = "#009973";
+
+var ctx;
+
+var gameSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0bVi0xNCnNM.mp3");
+var winSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0NNjUAaUQWu.mp3");
+
+var runOnce = 1;
+var wasteTime = 1;
+
+var resetButton = 82;
+var runReset = false;
+
+var countDown = 4;
+var countDownCount = 20;
+
+var canvasWidth = window.innerWidth - 40;
+var canvasHeight = window.innerHeight - 40;
+
+var shotSpeed = (canvasWidth + canvasHeight) * (4 / 200);
+var allPlayersSpeed = (canvasWidth + canvasHeight) / 200;
+
+var playerOne;
+var playerSpeed = allPlayersSpeed;
+var playerWidth = (canvasWidth + canvasHeight) / 50;
+var playerHeight = playerWidth;
+var playerColor = "#9900cc";
+var playerX = canvasWidth * (3 / 4);
+var playerY = canvasHeight / 2;
+var playerOneIsDead = false;
+var playerOneHasWon = false;
+var playerOneString = "PLAYER TWO";
+var playerOneIsFacing = "left";
+var playerOneWins = 0;
+
+var playerOneLeft = 37;
+var playerOneRight = 39;
+var playerOneUp = 38;
+var playerOneDown = 40;
+var playerOneShootKey = 191;
+
+var playerOneWeaponCount = 5;
+
+var playerOneWeapon;
+var pOWSpeed = playerSpeed;
+var pOWWidth = playerWidth;
+var pOWHeight = playerHeight;
+var pOWColor = "#c61aff";
+var pOWX = playerX - playerWidth;
+var pOWY = playerY;
+var pOWisShot = false;
+var pOWinitDir = "left";
+var pOWPrevX = pOWX;
+var pOWPrevY = pOWY;
+
+var playerOneWeapon2;
+var playerOneWeapon3;
+var playerOneWeapon4;
+var playerOneWeapon5;
+
+var wep1CountDown = 0;
+var wep2CountDown = 10;
+var wep3CountDown = 20;
+var wep4CountDown = 30;
+var wep5CountDown = 40;
+
+var playerTwo;
+var playerTSpeed = allPlayersSpeed;
+var playerTWidth = playerWidth;
+var playerTHeight = playerWidth;
+var playerTColor = "#009973";
+var playerTX = canvasWidth * (1 / 4);
+var playerTY = canvasHeight / 2;
+var playerTwoIsDead = false;
+var playerTwoHasWon = false;
+var playerTwoString = "PLAYER ONE";
+var playerTwoIsFacing = "right";
+var playerTwoWins = 0;
+
+var playerTwoLeft = 65;
+var playerTwoRight = 68;
+var playerTwoUp = 87;
+var playerTwoDown = 83;
+var playerTwoShootKey = 81;
+
+var playerTwoWeaponCount = 5;
+
+var playerTwoWeapon;
+var pTWSpeed = playerTSpeed;
+var pTWWidth = playerTWidth;
+var pTWHeight = playerTHeight;
+var pTWColor = "#00e6ac";
+var pTWX = playerTX + playerTWidth;
+var pTWY = playerTY;
+var pTWisShot = false;
+var pTWinitDir = "right";
+var pTWPrevX = pTWX;
+var pTWPrevY = pTWY;
+
+var playerTwoWeapon2;
+var playerTwoWeapon3;
+var playerTwoWeapon4;
+var playerTwoWeapon5;
+
+function resetCanvas() {
+	runOnce = 1;
+	
+	wasteTime = 1;
+	
+	resetButton = 82;
+  runReset = false;
+	
+	countDown = 4;
+	countDownCount = 20;
+
+	playerX = canvasWidth * (3 / 4);
+	playerY = canvasHeight / 2;
+	playerOneIsDead = false;
+	playerOneHasWon = false;
+	playerOneIsFacing = "left";
+	
+ playerOneWeaponCount = 5;
+ pOWX = playerX - playerWidth;
+ pOWY = playerY;
+ pOWisShot = false;
+ pOWinitDir = "left";
+ pOWPrevX = pOWX;
+ pOWPrevY = pOWY;
+	
+ wep1CountDown = 0;
+ wep2CountDown = 10;
+ wep3CountDown = 20;
+ wep4CountDown = 30;
+ wep5CountDown = 40;
+	
+ playerTX = canvasWidth * (1 / 4);
+ playerTY = canvasHeight / 2;
+ playerTwoIsDead = false;
+ playerTwoHasWon = false;
+ playerTwoIsFacing = "right";
+	
+ playerTwoWeaponCount = 5;
+	
+ pTWX = playerTX + playerTWidth;
+ pTWY = playerTY;
+ pTWisShot = false;
+ pTWinitDir = "right";
+ pTWPrevX = pTWX;
+ pTWPrevY = pTWY;
+}
+
+function initialFirst() {
+  playerOne = new canvasObject(playerWidth, playerHeight, playerColor, playerX, playerY, playerOneIsDead, playerOneHasWon, pOWisShot, playerOneIsFacing, pOWPrevX, pOWPrevY, playerOneWeaponCount);
+  playerOneWeapon = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep1CountDown);
+  playerOneWeapon2 = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep2CountDown);
+  playerOneWeapon3 = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep3CountDown);
+  playerOneWeapon4 = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep4CountDown);
+  playerOneWeapon5 = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep5CountDown);
+  playerTwo = new canvasObject(playerTWidth, playerTHeight, playerTColor, playerTX, playerTY, playerTwoIsDead, playerTwoHasWon, pTWisShot, playerTwoIsFacing, pOWPrevX, pOWPrevY, playerTwoWeaponCount);
+  playerTwoWeapon = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep1CountDown);
+  playerTwoWeapon2 = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep2CountDown);
+  playerTwoWeapon3 = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep3CountDown);
+  playerTwoWeapon4 = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep4CountDown);
+  playerTwoWeapon5 = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep5CountDown);
+  gameArea.start();
+}
+
+function initial() {
+  playerOne = new canvasObject(playerWidth, playerHeight, playerColor, playerX, playerY, playerOneIsDead, playerOneHasWon, pOWisShot, playerOneIsFacing, pOWPrevX, pOWPrevY, playerOneWeaponCount);
+  playerOneWeapon = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep1CountDown);
+  playerOneWeapon2 = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep2CountDown);
+  playerOneWeapon3 = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep3CountDown);
+  playerOneWeapon4 = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep4CountDown);
+  playerOneWeapon5 = new canvasObject(pOWWidth, pOWHeight, pOWColor, pOWX, pOWY, playerOneIsDead, playerOneHasWon, pOWisShot, pOWinitDir, pOWPrevX, pOWPrevY, playerOneWeaponCount, wep5CountDown);
+  playerTwo = new canvasObject(playerTWidth, playerTHeight, playerTColor, playerTX, playerTY, playerTwoIsDead, playerTwoHasWon, pTWisShot, playerTwoIsFacing, pOWPrevX, pOWPrevY, playerTwoWeaponCount);
+  playerTwoWeapon = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep1CountDown);
+  playerTwoWeapon2 = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep2CountDown);
+  playerTwoWeapon3 = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep3CountDown);
+  playerTwoWeapon4 = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep4CountDown);
+  playerTwoWeapon5 = new canvasObject(pTWWidth, pTWHeight, pTWColor, pTWX, pTWY, playerTwoIsDead, playerTwoHasWon, pTWisShot, pTWinitDir, pTWPrevX, pTWPrevY, playerTwoWeaponCount, wep5CountDown);
+}
+
+var gameArea = {
+  canvas : document.createElement("canvas"),
+  start : function() {
+    this.canvas.width = canvasWidth;
+    this.canvas.height = canvasHeight;
+    this.context = this.canvas.getContext("2d");
+    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+    this.frameNo = 0;
+    this.interval = setInterval(updateGameArea, 20);
+    window.addEventListener('keydown', function (e) {
+        e.preventDefault();
+        gameArea.keys = (gameArea.keys || []);
+        gameArea.keys[e.keyCode] = (e.type == "keydown");
+    })
+    window.addEventListener('keyup', function (e) {
+        gameArea.keys[e.keyCode] = (e.type == "keydown");
+    })
+  },
+  stop : function() {
+      clearInterval(this.interval);
+  },    
+  clear : function() {
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+}
+
+function canvasObject(width, height, color, x, y, isDead, hasWon, isShot, initDir, prevX, prevY, weaponCount, countDown, type)
+{
+	this.countDown = countDown;
+	this.weaponCount = weaponCount;
+	this.prevX = prevX;
+	this.prevY = prevY;
+	this.isShot = isShot;
+	this.initDir = initDir;
+	this.hasWon = hasWon;
+	this.isDead = isDead;
+	this.type = type;
+  this.width = width;
+  this.height = height;
+  this.speed = 0;
+  this.angle = 0;
+  this.moveAngle = 0;
+  this.x = x;
+  this.y = y;
+  this.update = function() {
+    ctx = gameArea.context;
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.fillStyle = color;
+    ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
+    ctx.restore();    
+  }
+  this.newPos = function() {
+  	this.angle += this.moveAngle * Math.PI / 180;
+    this.x += this.speed * Math.sin(this.angle);
+    this.y -= this.speed * Math.cos(this.angle);
+  }
+}
+
+function updateGameArea() {
+  gameArea.clear();
+  if (countDown > 1) {
+  	displayCountDown();
+  	if (countDownCount > 0) {
+  		countDownCount -= 1;
+  	}
+  	else {
+  		countDown -= 1;
+  		countDownCount = 20;
+  	}
+  }
+  else if (countDown == 1) {
+  	displayGoCountDown();
+  	if (countDownCount > 0) {
+  		countDownCount -= 1;
+  	}
+  	else {
+  		countDown -= 1;
+  		countDownCount = 20;
+  		gameSong.loop = true;
+  		gameSong.play();
+  	}
+  }
+  else {
+	  if (playerOne.isDead == false && playerTwo.isDead == false) {
+		  playerOne.moveAngle = 0;
+		  playerOne.speed = 0;
+		  checkKeys(playerOne, playerSpeed, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneIsFacing);
+		  checkBorders(playerOne);
+		  playerOne.newPos();
+		  playerOne.update();
+		  
+		  playerOneWeapon.moveAngle = 0;
+		  playerOneWeapon.speed = 0;
+		  checkWeaponKeys(playerOneWeapon, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+		  checkWeaponKeys(playerOneWeapon2, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+		  checkWeaponKeys(playerOneWeapon3, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+		  checkWeaponKeys(playerOneWeapon4, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+		  checkWeaponKeys(playerOneWeapon5, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+		  initialShootWeapon(playerOneWeapon, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+		  initialShootWeapon(playerOneWeapon2, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+		  initialShootWeapon(playerOneWeapon3, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+		  initialShootWeapon(playerOneWeapon4, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+		  initialShootWeapon(playerOneWeapon5, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+		  shootWeapon(playerOneWeapon);
+		  shootWeapon(playerOneWeapon2);
+		  shootWeapon(playerOneWeapon3);
+		  shootWeapon(playerOneWeapon4);
+		  shootWeapon(playerOneWeapon5);
+		  checkBorders(playerOneWeapon);
+		  checkBorders(playerOneWeapon2);
+		  checkBorders(playerOneWeapon3);
+		  checkBorders(playerOneWeapon4);
+		  checkBorders(playerOneWeapon5);
+		  playerOneWeapon.newPos();
+		  playerOneWeapon2.newPos();
+		  playerOneWeapon3.newPos();
+		  playerOneWeapon4.newPos();
+		  playerOneWeapon5.newPos();
+		  playerOneWeapon.update();
+		  playerOneWeapon2.update();
+		  playerOneWeapon3.update();
+		  playerOneWeapon4.update();
+		  playerOneWeapon5.update();
+		  displayShotsLeft();
+		  displayWins();
+		  
+			playerTwo.moveAngle = 0;
+		  playerTwo.speed = 0;
+		  checkKeys(playerTwo, playerTSpeed, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoIsFacing);
+		  checkBorders(playerTwo);
+		  playerTwo.newPos();
+		  playerTwo.update();
+		  
+		  playerTwoWeapon.moveAngle = 0;
+		  playerTwoWeapon.speed = 0;
+		  checkWeaponKeys(playerTwoWeapon, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+		  checkWeaponKeys(playerTwoWeapon2, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+		  checkWeaponKeys(playerTwoWeapon3, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+		  checkWeaponKeys(playerTwoWeapon4, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+		  checkWeaponKeys(playerTwoWeapon5, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+		 	initialShootWeapon(playerTwoWeapon, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+	  	initialShootWeapon(playerTwoWeapon2, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+		 	initialShootWeapon(playerTwoWeapon3, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+		  initialShootWeapon(playerTwoWeapon4, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+		  initialShootWeapon(playerTwoWeapon5, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+		  shootWeapon(playerTwoWeapon);
+		  shootWeapon(playerTwoWeapon2);
+		  shootWeapon(playerTwoWeapon3);
+		  shootWeapon(playerTwoWeapon4);
+		  shootWeapon(playerTwoWeapon5);
+		 	checkBorders(playerTwoWeapon);
+		 	checkBorders(playerTwoWeapon2);
+		 	checkBorders(playerTwoWeapon3);
+		 	checkBorders(playerTwoWeapon4);
+		 	checkBorders(playerTwoWeapon5);
+		 	playerTwoWeapon.newPos();
+		 	playerTwoWeapon2.newPos();
+		 	playerTwoWeapon3.newPos();
+		 	playerTwoWeapon4.newPos();
+		 	playerTwoWeapon5.newPos();
+		 	playerTwoWeapon.update();
+		 	playerTwoWeapon2.update();
+		 	playerTwoWeapon3.update();
+		 	playerTwoWeapon4.update();
+		 	playerTwoWeapon5.update();
+		 	displayP2ShotsLeft();
+		 	displayTwoWins();
+	  }
+	  
+	  checkCollision(playerOneWeapon, playerTwo, playerOne, playerTwoString);
+	  checkCollision(playerTwoWeapon, playerOne, playerTwo, playerOneString);
+	  checkCollision(playerOneWeapon2, playerTwo, playerOne, playerTwoString);
+	  checkCollision(playerTwoWeapon2, playerOne, playerTwo, playerOneString);
+	  checkCollision(playerOneWeapon3, playerTwo, playerOne, playerTwoString);
+	  checkCollision(playerTwoWeapon3, playerOne, playerTwo, playerOneString);
+	  checkCollision(playerOneWeapon4, playerTwo, playerOne, playerTwoString);
+	  checkCollision(playerTwoWeapon4, playerOne, playerTwo, playerOneString);
+	  checkCollision(playerOneWeapon5, playerTwo, playerOne, playerTwoString);
+	  checkCollision(playerTwoWeapon5, playerOne, playerTwo, playerOneString);
+	  
+	  if (playerOne.hasWon == true) {
+	  	if (runOnce > 0)
+	  		runOnce -= 1;
+	  	else {
+	  		runWin(playerOne, playerOneString, firstColor, midColor, endColor);
+	  	}
+	  }
+	  else if (playerTwo.hasWon == true) {
+	  	if (runOnce > 0)
+	  		runOnce -= 1;
+	  	else {
+		  	runWin(playerTwo, playerTwoString, firstTwoColor, midTwoColor, endTwoColor);
+	  	}
+	  }
+  }
+}
+
+function displayTwoWins() {
+	ctx = gameArea.context;
+	ctx.font = canvasWidth * (1/20) + "px Arial Black";
+	ctx.strokeStyle="#009973";
+	ctx.lineWidth = canvasWidth * (1/400);
+	ctx.textAlign = "left";
+	ctx.textBaseline="hanging"; 
+	ctx.strokeText("WINS : " + playerTwoWins, 5, 0);
+	ctx.textBaseline="alphabetic"; 
+}
+
+function displayWins() {
+	ctx = gameArea.context;
+	ctx.font = canvasWidth * (1/20) + "px Arial Black";
+	ctx.strokeStyle="#c61aff";
+	ctx.lineWidth = canvasWidth * (1/400);
+	ctx.textAlign = "right";
+	ctx.textBaseline="hanging"; 
+	ctx.strokeText("WINS : " + playerOneWins, canvasWidth - 5, 0);
+	ctx.textBaseline="alphabetic"; 
+}
+
+function displayShotsLeft() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#00e6ac";
+  ctx.fillRect(10, canvasHeight - canvasWidth * (1 / 30) - 10, canvasWidth * (1 / 30), canvasWidth * (1 / 30));
+	ctx.font = canvasWidth * (1/20) + "px Arial Black";
+	ctx.font = canvasWidth * (1/20) + "px Arial Black";
+	ctx.strokeStyle="#c61aff";
+	ctx.lineWidth = canvasWidth * (1/400);
+	ctx.textAlign = "right";
+	if (playerOneWeapon5.countDown == 40)
+		ctx.strokeText(": 5", canvasWidth - 10, canvasHeight - 10);
+	else if (playerOneWeapon5.countDown >= 30)
+		ctx.strokeText(": 4", canvasWidth - 10, canvasHeight - 10);
+	else if (playerOneWeapon5.countDown >= 20)
+		ctx.strokeText(": 3", canvasWidth - 10, canvasHeight - 10);
+	else if (playerOneWeapon5.countDown >= 10)
+		ctx.strokeText(": 2", canvasWidth - 10, canvasHeight - 10);
+	else if (playerOneWeapon5.countDown >= 0)
+		ctx.strokeText(": 1", canvasWidth - 10, canvasHeight - 10);
+	else
+		ctx.strokeText(": 0", canvasWidth - 10, canvasHeight - 10);
+}
+
+function displayP2ShotsLeft() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#c61aff";
+  ctx.fillRect(canvasWidth - 20 - canvasWidth * (1 / 30) - (canvasWidth * (3 / 40)), canvasHeight - canvasWidth * (1 / 30) - 10, canvasWidth * (1 / 30), canvasWidth * (1 / 30));
+	ctx.font = canvasWidth * (1/20) + "px Arial Black";
+	ctx.strokeStyle="#009973";
+	ctx.lineWidth = canvasWidth * (1/400);
+	ctx.textAlign = "left";
+	if (playerTwoWeapon5.countDown == 40)
+		ctx.strokeText(": 5", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+	else if (playerTwoWeapon5.countDown >= 30)
+		ctx.strokeText(": 4", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+	else if (playerTwoWeapon5.countDown >= 20)
+		ctx.strokeText(": 3", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+	else if (playerTwoWeapon5.countDown >= 10)
+		ctx.strokeText(": 2", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+	else if (playerTwoWeapon5.countDown >= 0)
+		ctx.strokeText(": 1", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+	else
+		ctx.strokeText(": 0", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+}
+
+function displayCountDown() {
+	gameArea.clear();
+	ctx = gameArea.context;
+	ctx.font = canvasWidth * (1/11) + "px Arial Black";
+	ctx.lineWidth = canvasWidth * (3/500);
+	ctx.textAlign = "center";
+	ctx.strokeText(countDown - 1, canvasWidth / 2, canvasHeight / 2);
+}
+
+function displayGoCountDown() {
+	gameArea.clear();
+	ctx = gameArea.context;
+	ctx.font = canvasWidth * (1/11) + "px Arial Black";
+	ctx.lineWidth = canvasWidth * (3/500);
+	ctx.textAlign = "center";
+	ctx.strokeText("GO!", canvasWidth / 2, canvasHeight / 2);
+}
+
+function runWin(winningChar, winString, colorA, colorB, colorC) {
+	gameArea.clear();
+	if (wasteTime > 0) {
+		for (i = 0; i < 125000000; i++) { 
+		}
+		if (winString == "PLAYER TWO")
+			playerOneWins += 1;
+		else
+			playerTwoWins += 1;
+		wasteTime = 0;
+	}
+	gameSong.pause();
+	winSong.play();
+	ctx.font = canvasWidth * (1/11) + "px Arial Black";
+	createGradient(colorA, colorB, colorC);
+	ctx.strokeStyle = gradient;
+	ctx.lineWidth = canvasWidth * (3/500);
+	ctx.textAlign = "center";
+	ctx.strokeText(winString + " WINS", canvasWidth / 2, canvasHeight / 2);
+	ctx.font = canvasWidth * (1/15) + "px Arial Black";
+	ctx.lineWidth = canvasWidth * (2/500);
+	ctx.strokeStyle = "#000000";
+	ctx.textAlign = "center";
+	ctx.strokeText("PRESS R TO RESTART", canvasWidth / 2, canvasHeight * (3 / 4));
+	if (gameArea.keys && gameArea.keys[resetButton]) {
+	  	resetGame();
+	}
+	else if (runReset == true) {
+		resetGame();
+	}
+}
+
+function resetGame() {
+	ctx.strokeStyle="#000000";
+	resetCanvas();
+	initial();
+}
+
+function createGradient(colorA, colorB, colorC) {
+	gradient = ctx.createLinearGradient(0, 0, gameArea.canvas.width, 0);
+	gradient.addColorStop("0", colorA);
+	gradient.addColorStop("0.5", colorB);
+	gradient.addColorStop("1.0", colorC);
+}
+
+function initialShootWeapon(weaponObject, playerControl, controlLeft, controlRight, controlUp, controlDown, shootKey, playerIsFacing) {
+	if (weaponObject.isShot == false)
+	{
+		if (gameArea.keys && gameArea.keys[shootKey]) {
+			if (playerControl.initDir == "left") {
+		  	weaponObject.initDir = "left";
+		  	if (weaponObject.countDown == 0)
+		  		weaponObject.isShot = true;
+		  	weaponObject.countDown -= 1;
+		  	playerControl.weaponCount -= 1;
+		  }
+		  if (playerControl.initDir == "right") {
+		  	weaponObject.initDir = "right";
+		  	if (weaponObject.countDown == 0)
+		  		weaponObject.isShot = true;
+		  	weaponObject.countDown -= 1;
+		  	playerControl.weaponCount -= 1;
+		  }
+		  if (playerControl.initDir == "up") {
+		  	weaponObject.initDir = "up";
+		  	if (weaponObject.countDown == 0)
+		  		weaponObject.isShot = true;
+		  	weaponObject.countDown -= 1;
+		  	playerControl.weaponCount -= 1;
+		  }
+		  if (playerControl.initDir == "down") {
+				weaponObject.initDir = "down";
+				if (weaponObject.countDown == 0)
+		  		weaponObject.isShot = true;
+		  	weaponObject.countDown -= 1;
+				playerControl.weaponCount -= 1;
+		  }
+		}
+	}
+}
+
+function shootWeapon(weaponObject) {
+	if (weaponObject.isShot == false) {
+		weaponObject.prevX = weaponObject.x;
+		weaponObject.prevY = weaponObject.y;
+	}
+	else
+	{
+		if(weaponObject.initDir == "left") {
+			weaponObject.x = weaponObject.prevX;
+			weaponObject.y = weaponObject.prevY;
+			weaponObject.prevX -= shotSpeed;
+		}
+		if(weaponObject.initDir == "right") {
+			weaponObject.x = weaponObject.prevX;
+			weaponObject.y = weaponObject.prevY;
+			weaponObject.prevX += shotSpeed;
+		}
+		if(weaponObject.initDir == "up") {
+			weaponObject.x = weaponObject.prevX;
+			weaponObject.y = weaponObject.prevY;
+			weaponObject.prevY -= shotSpeed;
+		}
+		if(weaponObject.initDir == "down") {
+			weaponObject.x = weaponObject.prevX;
+			weaponObject.y = weaponObject.prevY;
+			weaponObject.prevY += shotSpeed;
+		}
+	}
+}
+
+function checkWeaponKeys(weaponObject, playerControl, controlLeft, controlRight, controlUp, controlDown) {
+	if (weaponObject.isShot == false) {
+		if (gameArea.keys && gameArea.keys[controlLeft]) {
+	  	weaponObject.x = playerControl.x - playerControl.width;
+	  	weaponObject.y = playerControl.y;
+	  }
+	  if (gameArea.keys && gameArea.keys[controlRight]) {
+	  	weaponObject.x = playerControl.x + playerControl.width;
+	  	weaponObject.y = playerControl.y;
+	  }
+	  if (gameArea.keys && gameArea.keys[controlUp]) {
+	  	weaponObject.y = playerControl.y - playerControl.height;
+	  	weaponObject.x = playerControl.x;
+	  }
+	  if (gameArea.keys && gameArea.keys[controlDown]) {
+	  	weaponObject.y = playerControl.y + playerControl.height;
+	  	weaponObject.x = playerControl.x;
+	  }
+	}
+}
+
+function checkKeys(moveObject, objectSpeed, objectLeft, objectRight, objectUp, objectDown, playerFacing) {
+  if (gameArea.keys && gameArea.keys[objectLeft]) {
+  	moveObject.x += -1 * objectSpeed;
+  	moveObject.initDir = "left";
+  }
+  if (gameArea.keys && gameArea.keys[objectRight]) {
+  	moveObject.x += 1 * objectSpeed;
+  	moveObject.initDir = "right";
+  	
+  }
+  if (gameArea.keys && gameArea.keys[objectUp]) {
+  	moveObject.y += -1 * objectSpeed;
+  	moveObject.initDir = "up";
+  	
+  }
+  if (gameArea.keys && gameArea.keys[objectDown]) {
+  	moveObject.y += 1 * objectSpeed; 
+  	moveObject.initDir = "down";
+  }
+}
+
+function checkBorders(borderObject) {
+  if (borderObject.x > canvasWidth) {
+  	borderObject.x = 0;
+  	borderObject.prevX = 0;
+  }
+  if (borderObject.x < 0) {
+  	borderObject.x = canvasWidth;
+  	borderObject.prevX = canvasWidth;
+  }
+  if (borderObject.y > canvasHeight) {
+  	borderObject.y = 0;
+  	borderObject.prevY = 0;
+  }
+  if (borderObject.y < 0) {
+  	borderObject.y = canvasHeight;
+  	borderObject.prevY = canvasHeight;
+  }
+}
+
+function checkCollision(weaponObject, playerObject, winningObject, losingPlayerString) {
+	if (weaponObject.x < playerObject.x + playerObject.width && weaponObject.x + weaponObject.width > playerObject.x && weaponObject.y < playerObject.y + playerObject.height && weaponObject.y + weaponObject.height > playerObject.y) {
+		playerObject.isDead = true;
+		winningObject.hasWon = true;
+	}
+}
+
+</script> 
+
+</body>
+</html>
