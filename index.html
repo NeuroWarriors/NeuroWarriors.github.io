@@ -15,6 +15,12 @@
 
 var gradient;
 
+var beginGame = 1;
+
+var playerTie = 0;
+
+var startKey = 32; 
+
 var firstColor = "#9900cc";
 var midColor = "#c61aff";
 var endColor = "#9900cc";
@@ -23,6 +29,10 @@ var firstTwoColor = "#009973";
 var midTwoColor = "#00e6ac";
 var endTwoColor = "#009973";
 
+var tieColorA = "#cc5200";
+var tieColorB = "#ffa366";
+var tieColorC = "#cc5200";
+
 var ctx;
 
 var gameSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0bVi0xNCnNM.mp3");
@@ -30,6 +40,9 @@ var winSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0NNj
 
 var runOnce = 1;
 var wasteTime = 1;
+
+var gameClock = 30;
+var gameClockCount = 30;
 
 var resetButton = 82;
 var runReset = false;
@@ -40,8 +53,10 @@ var countDownCount = 20;
 var canvasWidth = window.innerWidth - 40;
 var canvasHeight = window.innerHeight - 40;
 
-var shotSpeed = (canvasWidth + canvasHeight) * (4 / 200);
-var allPlayersSpeed = (canvasWidth + canvasHeight) / 200;
+var tieString = "NOBODY";
+
+var shotSpeed = (canvasWidth + canvasHeight) * (3 / 100);
+var allPlayersSpeed = (canvasWidth + canvasHeight) / 150;
 
 var playerOne;
 var playerSpeed = allPlayersSpeed;
@@ -129,6 +144,9 @@ function resetCanvas() {
 	runOnce = 1;
 	
 	wasteTime = 1;
+	
+	gameClock = 30;
+	gameClockCount = 30;
 	
 	resetButton = 82;
   runReset = false;
@@ -265,141 +283,176 @@ function canvasObject(width, height, color, x, y, isDead, hasWon, isShot, initDi
 
 function updateGameArea() {
   gameArea.clear();
-  if (countDown > 1) {
-  	displayCountDown();
-  	if (countDownCount > 0) {
-  		countDownCount -= 1;
-  	}
-  	else {
-  		countDown -= 1;
-  		countDownCount = 20;
-  	}
-  }
-  else if (countDown == 1) {
-  	displayGoCountDown();
-  	if (countDownCount > 0) {
-  		countDownCount -= 1;
-  	}
-  	else {
-  		countDown -= 1;
-  		countDownCount = 20;
-  		gameSong.loop = true;
-  		gameSong.play();
-  	}
-  }
-  else {
-	  if (playerOne.isDead == false && playerTwo.isDead == false) {
-		  playerOne.moveAngle = 0;
-		  playerOne.speed = 0;
-		  checkKeys(playerOne, playerSpeed, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneIsFacing);
-		  checkBorders(playerOne);
-		  playerOne.newPos();
-		  playerOne.update();
-		  
-		  playerOneWeapon.moveAngle = 0;
-		  playerOneWeapon.speed = 0;
-		  checkWeaponKeys(playerOneWeapon, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
-		  checkWeaponKeys(playerOneWeapon2, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
-		  checkWeaponKeys(playerOneWeapon3, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
-		  checkWeaponKeys(playerOneWeapon4, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
-		  checkWeaponKeys(playerOneWeapon5, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
-		  initialShootWeapon(playerOneWeapon, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
-		  initialShootWeapon(playerOneWeapon2, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
-		  initialShootWeapon(playerOneWeapon3, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
-		  initialShootWeapon(playerOneWeapon4, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
-		  initialShootWeapon(playerOneWeapon5, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
-		  shootWeapon(playerOneWeapon);
-		  shootWeapon(playerOneWeapon2);
-		  shootWeapon(playerOneWeapon3);
-		  shootWeapon(playerOneWeapon4);
-		  shootWeapon(playerOneWeapon5);
-		  checkBorders(playerOneWeapon);
-		  checkBorders(playerOneWeapon2);
-		  checkBorders(playerOneWeapon3);
-		  checkBorders(playerOneWeapon4);
-		  checkBorders(playerOneWeapon5);
-		  playerOneWeapon.newPos();
-		  playerOneWeapon2.newPos();
-		  playerOneWeapon3.newPos();
-		  playerOneWeapon4.newPos();
-		  playerOneWeapon5.newPos();
-		  playerOneWeapon.update();
-		  playerOneWeapon2.update();
-		  playerOneWeapon3.update();
-		  playerOneWeapon4.update();
-		  playerOneWeapon5.update();
-		  displayShotsLeft();
-		  displayWins();
-		  
-			playerTwo.moveAngle = 0;
-		  playerTwo.speed = 0;
-		  checkKeys(playerTwo, playerTSpeed, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoIsFacing);
-		  checkBorders(playerTwo);
-		  playerTwo.newPos();
-		  playerTwo.update();
-		  
-		  playerTwoWeapon.moveAngle = 0;
-		  playerTwoWeapon.speed = 0;
-		  checkWeaponKeys(playerTwoWeapon, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
-		  checkWeaponKeys(playerTwoWeapon2, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
-		  checkWeaponKeys(playerTwoWeapon3, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
-		  checkWeaponKeys(playerTwoWeapon4, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
-		  checkWeaponKeys(playerTwoWeapon5, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
-		 	initialShootWeapon(playerTwoWeapon, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
-	  	initialShootWeapon(playerTwoWeapon2, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
-		 	initialShootWeapon(playerTwoWeapon3, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
-		  initialShootWeapon(playerTwoWeapon4, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
-		  initialShootWeapon(playerTwoWeapon5, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
-		  shootWeapon(playerTwoWeapon);
-		  shootWeapon(playerTwoWeapon2);
-		  shootWeapon(playerTwoWeapon3);
-		  shootWeapon(playerTwoWeapon4);
-		  shootWeapon(playerTwoWeapon5);
-		 	checkBorders(playerTwoWeapon);
-		 	checkBorders(playerTwoWeapon2);
-		 	checkBorders(playerTwoWeapon3);
-		 	checkBorders(playerTwoWeapon4);
-		 	checkBorders(playerTwoWeapon5);
-		 	playerTwoWeapon.newPos();
-		 	playerTwoWeapon2.newPos();
-		 	playerTwoWeapon3.newPos();
-		 	playerTwoWeapon4.newPos();
-		 	playerTwoWeapon5.newPos();
-		 	playerTwoWeapon.update();
-		 	playerTwoWeapon2.update();
-		 	playerTwoWeapon3.update();
-		 	playerTwoWeapon4.update();
-		 	playerTwoWeapon5.update();
-		 	displayP2ShotsLeft();
-		 	displayTwoWins();
-	  }
-	  
-	  checkCollision(playerOneWeapon, playerTwo, playerOne, playerTwoString);
-	  checkCollision(playerTwoWeapon, playerOne, playerTwo, playerOneString);
-	  checkCollision(playerOneWeapon2, playerTwo, playerOne, playerTwoString);
-	  checkCollision(playerTwoWeapon2, playerOne, playerTwo, playerOneString);
-	  checkCollision(playerOneWeapon3, playerTwo, playerOne, playerTwoString);
-	  checkCollision(playerTwoWeapon3, playerOne, playerTwo, playerOneString);
-	  checkCollision(playerOneWeapon4, playerTwo, playerOne, playerTwoString);
-	  checkCollision(playerTwoWeapon4, playerOne, playerTwo, playerOneString);
-	  checkCollision(playerOneWeapon5, playerTwo, playerOne, playerTwoString);
-	  checkCollision(playerTwoWeapon5, playerOne, playerTwo, playerOneString);
-	  
-	  if (playerOne.hasWon == true) {
-	  	if (runOnce > 0)
-	  		runOnce -= 1;
+  if (beginGame == 0) {
+	  if (countDown > 1) {
+	  	displayCountDown();
+	  	if (countDownCount > 0) {
+	  		countDownCount -= 1;
+	  	}
 	  	else {
-	  		runWin(playerOne, playerOneString, firstColor, midColor, endColor);
+	  		countDown -= 1;
+	  		countDownCount = 20;
 	  	}
 	  }
-	  else if (playerTwo.hasWon == true) {
-	  	if (runOnce > 0)
-	  		runOnce -= 1;
+	  else if (countDown == 1) {
+	  	displayGoCountDown();
+	  	if (countDownCount > 0) {
+	  		countDownCount -= 1;
+	  	}
 	  	else {
-		  	runWin(playerTwo, playerTwoString, firstTwoColor, midTwoColor, endTwoColor);
+	  		countDown -= 1;
+	  		countDownCount = 20;
+	  		gameSong.loop = true;
+	  		gameSong.play();
 	  	}
 	  }
-  }
+	  else if (gameClock > 0) {
+			if (playerOne.isDead == false && playerTwo.isDead == false) {
+				  playerOne.moveAngle = 0;
+				  playerOne.speed = 0;
+				  checkKeys(playerOne, playerSpeed, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneIsFacing);
+				  checkBorders(playerOne);
+				  playerOne.newPos();
+				  playerOne.update();
+				  
+				  playerOneWeapon.moveAngle = 0;
+				  playerOneWeapon.speed = 0;
+				  checkWeaponKeys(playerOneWeapon, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+				  checkWeaponKeys(playerOneWeapon2, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+				  checkWeaponKeys(playerOneWeapon3, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+				  checkWeaponKeys(playerOneWeapon4, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+				  checkWeaponKeys(playerOneWeapon5, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown);
+				  initialShootWeapon(playerOneWeapon, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+				  initialShootWeapon(playerOneWeapon2, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+				  initialShootWeapon(playerOneWeapon3, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+				  initialShootWeapon(playerOneWeapon4, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+				  initialShootWeapon(playerOneWeapon5, playerOne, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneShootKey, playerOneIsFacing);
+				  shootWeapon(playerOneWeapon);
+				  shootWeapon(playerOneWeapon2);
+				  shootWeapon(playerOneWeapon3);
+				  shootWeapon(playerOneWeapon4);
+				  shootWeapon(playerOneWeapon5);
+				  checkBorders(playerOneWeapon);
+				  checkBorders(playerOneWeapon2);
+				  checkBorders(playerOneWeapon3);
+				  checkBorders(playerOneWeapon4);
+				  checkBorders(playerOneWeapon5);
+				  playerOneWeapon.newPos();
+				  playerOneWeapon2.newPos();
+				  playerOneWeapon3.newPos();
+				  playerOneWeapon4.newPos();
+				  playerOneWeapon5.newPos();
+				  playerOneWeapon.update();
+				  playerOneWeapon2.update();
+				  playerOneWeapon3.update();
+				  playerOneWeapon4.update();
+				  playerOneWeapon5.update();
+				  displayShotsLeft();
+				  displayWins();
+				  
+					playerTwo.moveAngle = 0;
+				  playerTwo.speed = 0;
+				  checkKeys(playerTwo, playerTSpeed, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoIsFacing);
+				  checkBorders(playerTwo);
+				  playerTwo.newPos();
+				  playerTwo.update();
+				  
+				  playerTwoWeapon.moveAngle = 0;
+				  playerTwoWeapon.speed = 0;
+				  checkWeaponKeys(playerTwoWeapon, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+				  checkWeaponKeys(playerTwoWeapon2, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+				  checkWeaponKeys(playerTwoWeapon3, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+				  checkWeaponKeys(playerTwoWeapon4, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+				  checkWeaponKeys(playerTwoWeapon5, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown);
+				 	initialShootWeapon(playerTwoWeapon, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+			  	initialShootWeapon(playerTwoWeapon2, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+				 	initialShootWeapon(playerTwoWeapon3, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+				  initialShootWeapon(playerTwoWeapon4, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+				  initialShootWeapon(playerTwoWeapon5, playerTwo, playerTwoLeft, playerTwoRight, playerTwoUp, playerTwoDown, playerTwoShootKey, playerTwoIsFacing);
+				  shootWeapon(playerTwoWeapon);
+				  shootWeapon(playerTwoWeapon2);
+				  shootWeapon(playerTwoWeapon3);
+				  shootWeapon(playerTwoWeapon4);
+				  shootWeapon(playerTwoWeapon5);
+				 	checkBorders(playerTwoWeapon);
+				 	checkBorders(playerTwoWeapon2);
+				 	checkBorders(playerTwoWeapon3);
+				 	checkBorders(playerTwoWeapon4);
+				 	checkBorders(playerTwoWeapon5);
+				 	playerTwoWeapon.newPos();
+				 	playerTwoWeapon2.newPos();
+				 	playerTwoWeapon3.newPos();
+				 	playerTwoWeapon4.newPos();
+				 	playerTwoWeapon5.newPos();
+				 	playerTwoWeapon.update();
+				 	playerTwoWeapon2.update();
+				 	playerTwoWeapon3.update();
+				 	playerTwoWeapon4.update();
+				 	playerTwoWeapon5.update();
+				 	displayP2ShotsLeft();
+				 	displayTwoWins();
+				 	
+				 	displayClock();
+				 	
+				 	if (gameClockCount == 0) {
+				 		gameClock -= 1;
+				 		gameClockCount = 30;
+				 	}
+				 	gameClockCount -= 1;
+			  }
+	  	}
+			  else {
+			  	runTie(playerTie, tieString, tieColorA, tieColorB, tieColorC);
+			  }
+			  
+			  checkCollision(playerOneWeapon, playerTwo, playerOne, playerTwoString);
+			  checkCollision(playerTwoWeapon, playerOne, playerTwo, playerOneString);
+			  checkCollision(playerOneWeapon2, playerTwo, playerOne, playerTwoString);
+			  checkCollision(playerTwoWeapon2, playerOne, playerTwo, playerOneString);
+			  checkCollision(playerOneWeapon3, playerTwo, playerOne, playerTwoString);
+			  checkCollision(playerTwoWeapon3, playerOne, playerTwo, playerOneString);
+			  checkCollision(playerOneWeapon4, playerTwo, playerOne, playerTwoString);
+			  checkCollision(playerTwoWeapon4, playerOne, playerTwo, playerOneString);
+			  checkCollision(playerOneWeapon5, playerTwo, playerOne, playerTwoString);
+			  checkCollision(playerTwoWeapon5, playerOne, playerTwo, playerOneString);
+			  
+			  if (playerOne.hasWon == true) {
+			  	if (runOnce > 0)
+			  		runOnce -= 1;
+			  	else {
+			  		runWin(playerOne, playerOneString, firstColor, midColor, endColor);
+			  	}
+			  }
+			  else if (playerTwo.hasWon == true) {
+			  	if (runOnce > 0)
+			  		runOnce -= 1;
+			  	else {
+				  	runWin(playerTwo, playerTwoString, firstTwoColor, midTwoColor, endTwoColor);
+			  	}
+			  }
+	  	}
+		  else if (gameArea.keys && gameArea.keys[startKey]) {
+		  	beginGame = 0;
+		  }
+		  else {
+		  	ctx = gameArea.context;
+				ctx.font = canvasWidth * (1/11) + "px Arial Black";
+				ctx.lineWidth = canvasWidth * (3/500);
+				ctx.textAlign = "center";
+				ctx.strokeStyle="#000000";
+				ctx.strokeText("NEURO-WARRIORS", canvasWidth / 2, canvasHeight / 2);
+				ctx.font = canvasWidth * (1/15) + "px Arial Black";
+				ctx.lineWidth = canvasWidth * (2/500);
+				ctx.strokeText("PRESS SPACE TO START", canvasWidth / 2, canvasHeight * (3 / 5));
+				ctx.strokeStyle="#009973";
+				ctx.font = canvasWidth * (1/20) + "px Arial Black";
+				ctx.strokeText("P1:", canvasWidth / 4, canvasHeight * (3 / 4));
+				ctx.strokeText("W A S D Q", canvasWidth / 4, canvasHeight * (5 / 6));
+				ctx.strokeStyle="#9900cc";
+				ctx.font = canvasWidth * (1/20) + "px Arial Black";
+				ctx.strokeText("P2:", canvasWidth * (3 / 4), canvasHeight * (3 / 4));
+				ctx.strokeText("↑ ← ↓ → /", canvasWidth * (3 / 4), canvasHeight * (5 / 6));
+		  }
 }
 
 function displayTwoWins() {
@@ -410,6 +463,17 @@ function displayTwoWins() {
 	ctx.textAlign = "left";
 	ctx.textBaseline="hanging"; 
 	ctx.strokeText("WINS : " + playerTwoWins, 10, 10);
+	ctx.textBaseline="alphabetic"; 
+}
+
+function displayClock() {
+	ctx = gameArea.context;
+	ctx.font = canvasWidth * (1/20) + "px Arial Black";
+	ctx.strokeStyle="#000000";
+	ctx.lineWidth = canvasWidth * (1/400);
+	ctx.textAlign = "center";
+	ctx.textBaseline="hanging"; 
+	ctx.strokeText(gameClock, canvasWidth / 2, 10);
 	ctx.textBaseline="alphabetic"; 
 }
 
@@ -471,6 +535,7 @@ function displayP2ShotsLeft() {
 
 function displayCountDown() {
 	gameArea.clear();
+	ctx.strokeStyle="#000000";
 	ctx = gameArea.context;
 	ctx.font = canvasWidth * (1/11) + "px Arial Black";
 	ctx.lineWidth = canvasWidth * (3/500);
@@ -500,6 +565,34 @@ function runWin(winningChar, winString, colorA, colorB, colorC) {
 	}
 	gameSong.pause();
 	winSong.play();
+	ctx.font = canvasWidth * (1/11) + "px Arial Black";
+	createGradient(colorA, colorB, colorC);
+	ctx.strokeStyle = gradient;
+	ctx.lineWidth = canvasWidth * (3/500);
+	ctx.textAlign = "center";
+	ctx.strokeText(winString + " WINS", canvasWidth / 2, canvasHeight / 2);
+	ctx.font = canvasWidth * (1/15) + "px Arial Black";
+	ctx.lineWidth = canvasWidth * (2/500);
+	ctx.strokeStyle = "#000000";
+	ctx.textAlign = "center";
+	ctx.strokeText("PRESS R TO RESTART", canvasWidth / 2, canvasHeight * (3 / 4));
+	if (gameArea.keys && gameArea.keys[resetButton]) {
+	  	resetGame();
+	}
+	else if (runReset == true) {
+		resetGame();
+	}
+}
+
+function runTie(winningChar, winString, colorA, colorB, colorC) {
+	gameArea.clear();
+	if (wasteTime > 0) {
+		for (i = 0; i < 125000000; i++) { 
+		}
+		wasteTime = 0;
+	}
+	gameSong.pause();
+	winSong.play(); //change to TieSong
 	ctx.font = canvasWidth * (1/11) + "px Arial Black";
 	createGradient(colorA, colorB, colorC);
 	ctx.strokeStyle = gradient;
