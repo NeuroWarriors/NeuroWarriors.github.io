@@ -37,6 +37,7 @@ var ctx;
 
 var gameSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0bVi0xNCnNM.mp3");
 var winSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0NNjUAaUQWu.mp3");
+var tieSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0NNjUAaUQWu.mp3");
 
 var runOnce = 1;
 var wasteTime = 1;
@@ -150,6 +151,10 @@ function resetCanvas() {
 	
 	resetButton = 82;
   runReset = false;
+  
+  winSong.currentTime = 0;
+  tieSong.currentTime = 0;
+  gameSong.currentTime = 0;
 	
 	countDown = 4;
 	countDownCount = 20;
@@ -285,6 +290,8 @@ function updateGameArea() {
   gameArea.clear();
   if (beginGame == 0) {
 	  if (countDown > 1) {
+	  	winSong.pause();
+			tieSong.pause();
 	  	displayCountDown();
 	  	if (countDownCount > 0) {
 	  		countDownCount -= 1;
@@ -562,9 +569,9 @@ function runWin(winningChar, winString, colorA, colorB, colorC) {
 		else
 			playerTwoWins += 1;
 		wasteTime = 0;
+		gameSong.pause();
+		winSong.play();
 	}
-	gameSong.pause();
-	winSong.play();
 	ctx.font = canvasWidth * (1/11) + "px Arial Black";
 	createGradient(colorA, colorB, colorC);
 	ctx.strokeStyle = gradient;
@@ -590,9 +597,9 @@ function runTie(winningChar, winString, colorA, colorB, colorC) {
 		for (i = 0; i < 125000000; i++) { 
 		}
 		wasteTime = 0;
+		gameSong.pause();
+		tieSong.play();
 	}
-	gameSong.pause();
-	winSong.play(); //change to TieSong
 	ctx.font = canvasWidth * (1/11) + "px Arial Black";
 	createGradient(colorA, colorB, colorC);
 	ctx.strokeStyle = gradient;
