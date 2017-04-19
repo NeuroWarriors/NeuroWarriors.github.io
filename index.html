@@ -35,15 +35,18 @@ var tieColorC = "#cc5200";
 
 var ctx;
 
-var gameSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0bVi0xNCnNM.mp3");
-var winSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0NNjUAaUQWu.mp3");
-var tieSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0NNjUAaUQWu.mp3");
+var menuSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s07I36Eu7TLc.mp3");
+var gameSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s18d07piT8yC.mp3");
+var winSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s1S9acvItyVG.mp3");
+var tieSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0ehxVi71Rqu.mp3");
+
+menuSong.loop = true;
 
 var runOnce = 1;
 var wasteTime = 1;
 
 var gameClock = 30;
-var gameClockCount = 30;
+var gameClockCount = 29;
 
 var resetButton = 82;
 var runReset = false;
@@ -147,7 +150,7 @@ function resetCanvas() {
 	wasteTime = 1;
 	
 	gameClock = 30;
-	gameClockCount = 30;
+	gameClockCount = 29;
 	
 	resetButton = 82;
   runReset = false;
@@ -290,6 +293,7 @@ function updateGameArea() {
   gameArea.clear();
   if (beginGame == 0) {
 	  if (countDown > 1) {
+	  	menuSong.pause();
 	  	winSong.pause();
 			tieSong.pause();
 	  	displayCountDown();
@@ -315,6 +319,14 @@ function updateGameArea() {
 	  }
 	  else if (gameClock > 0) {
 			if (playerOne.isDead == false && playerTwo.isDead == false) {
+					displayShotsLeft();
+				  displayWins();
+					
+					displayP2ShotsLeft();
+				 	displayTwoWins();
+				 	
+				 	displayClock();
+				
 				  playerOne.moveAngle = 0;
 				  playerOne.speed = 0;
 				  checkKeys(playerOne, playerSpeed, playerOneLeft, playerOneRight, playerOneUp, playerOneDown, playerOneIsFacing);
@@ -354,8 +366,6 @@ function updateGameArea() {
 				  playerOneWeapon3.update();
 				  playerOneWeapon4.update();
 				  playerOneWeapon5.update();
-				  displayShotsLeft();
-				  displayWins();
 				  
 					playerTwo.moveAngle = 0;
 				  playerTwo.speed = 0;
@@ -396,14 +406,10 @@ function updateGameArea() {
 				 	playerTwoWeapon3.update();
 				 	playerTwoWeapon4.update();
 				 	playerTwoWeapon5.update();
-				 	displayP2ShotsLeft();
-				 	displayTwoWins();
-				 	
-				 	displayClock();
 				 	
 				 	if (gameClockCount == 0) {
 				 		gameClock -= 1;
-				 		gameClockCount = 30;
+				 		gameClockCount = 29;
 				 	}
 				 	gameClockCount -= 1;
 			  }
@@ -443,55 +449,56 @@ function updateGameArea() {
 		  }
 		  else {
 		  	ctx = gameArea.context;
-				ctx.font = canvasWidth * (1/11) + "px Arial Black";
+		  	menuSong.play();
+				ctx.font = canvasWidth * (1/11) + "px Helvetica";
 				ctx.lineWidth = canvasWidth * (3/500);
 				ctx.textAlign = "center";
-				ctx.strokeStyle="#000000";
-				ctx.strokeText("NEURO-WARRIORS", canvasWidth / 2, canvasHeight / 2);
-				ctx.font = canvasWidth * (1/15) + "px Arial Black";
+				ctx.fillStyle="#000000";
+				ctx.fillText("NEURO-WARRIORS", canvasWidth / 2, canvasHeight / 2);
+				ctx.font = canvasWidth * (1/15) + "px Helvetica";
 				ctx.lineWidth = canvasWidth * (2/500);
-				ctx.strokeText("PRESS SPACE TO START", canvasWidth / 2, canvasHeight * (3 / 5));
-				ctx.strokeStyle="#009973";
-				ctx.font = canvasWidth * (1/20) + "px Arial Black";
-				ctx.strokeText("P1:", canvasWidth / 4, canvasHeight * (3 / 4));
-				ctx.strokeText("W A S D Q", canvasWidth / 4, canvasHeight * (5 / 6));
-				ctx.strokeStyle="#9900cc";
-				ctx.font = canvasWidth * (1/20) + "px Arial Black";
-				ctx.strokeText("P2:", canvasWidth * (3 / 4), canvasHeight * (3 / 4));
-				ctx.strokeText("↑ ← ↓ → /", canvasWidth * (3 / 4), canvasHeight * (5 / 6));
+				ctx.fillText("PRESS SPACE TO START", canvasWidth / 2, canvasHeight * (3 / 5));
+				ctx.fillStyle="#009973";
+				ctx.font = canvasWidth * (1/20) + "px Helvetica";
+				ctx.fillText("P1:", canvasWidth / 4, canvasHeight * (3 / 4));
+				ctx.fillText("W A S D Q", canvasWidth / 4, canvasHeight * (5 / 6));
+				ctx.fillStyle="#9900cc";
+				ctx.font = canvasWidth * (1/20) + "px Helvetica";
+				ctx.fillText("P2:", canvasWidth * (3 / 4), canvasHeight * (3 / 4));
+				ctx.fillText("↑ ← ↓ → /", canvasWidth * (3 / 4), canvasHeight * (5 / 6));
 		  }
 }
 
 function displayTwoWins() {
 	ctx = gameArea.context;
-	ctx.font = canvasWidth * (1/20) + "px Arial Black";
-	ctx.strokeStyle="#009973";
+	ctx.font = canvasWidth * (1/20) + "px Helvetica";
+	ctx.fillStyle="#009973";
 	ctx.lineWidth = canvasWidth * (1/400);
 	ctx.textAlign = "left";
 	ctx.textBaseline="hanging"; 
-	ctx.strokeText("WINS : " + playerTwoWins, 10, 10);
+	ctx.fillText("WINS : " + playerTwoWins, 10, 10);
 	ctx.textBaseline="alphabetic"; 
 }
 
 function displayClock() {
 	ctx = gameArea.context;
-	ctx.font = canvasWidth * (1/20) + "px Arial Black";
-	ctx.strokeStyle="#000000";
+	ctx.font = canvasWidth * (1/20) + "px Helvetica";
+	ctx.fillStyle="#000000";
 	ctx.lineWidth = canvasWidth * (1/400);
 	ctx.textAlign = "center";
 	ctx.textBaseline="hanging"; 
-	ctx.strokeText(gameClock, canvasWidth / 2, 10);
+	ctx.fillText(gameClock, canvasWidth / 2, 10);
 	ctx.textBaseline="alphabetic"; 
 }
 
 function displayWins() {
 	ctx = gameArea.context;
-	ctx.font = canvasWidth * (1/20) + "px Arial Black";
-	ctx.strokeStyle="#c61aff";
+	ctx.font = canvasWidth * (1/20) + "px Helvetica";
+	ctx.fillStyle="#c61aff";
 	ctx.lineWidth = canvasWidth * (1/400);
 	ctx.textAlign = "right";
 	ctx.textBaseline="hanging"; 
-	ctx.strokeText("WINS : " + playerOneWins, canvasWidth - 10, 10);
+	ctx.fillText("WINS : " + playerOneWins, canvasWidth - 10, 10);
 	ctx.textBaseline="alphabetic"; 
 }
 
@@ -499,64 +506,64 @@ function displayShotsLeft() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#00e6ac";
   ctx.fillRect(10, canvasHeight - canvasWidth * (1 / 30) - 10, canvasWidth * (1 / 30), canvasWidth * (1 / 30));
-	ctx.font = canvasWidth * (1/20) + "px Arial Black";
-	ctx.font = canvasWidth * (1/20) + "px Arial Black";
-	ctx.strokeStyle="#c61aff";
+	ctx.font = canvasWidth * (1/20) + "px Helvetica";
+	ctx.font = canvasWidth * (1/20) + "px Helvetica";
+	ctx.fillStyle="#c61aff";
 	ctx.lineWidth = canvasWidth * (1/400);
 	ctx.textAlign = "right";
 	if (playerOneWeapon5.countDown == 40)
-		ctx.strokeText(": 5", canvasWidth - 10, canvasHeight - 10);
+		ctx.fillText(": 5", canvasWidth - 10, canvasHeight - 10);
 	else if (playerOneWeapon5.countDown >= 30)
-		ctx.strokeText(": 4", canvasWidth - 10, canvasHeight - 10);
+		ctx.fillText(": 4", canvasWidth - 10, canvasHeight - 10);
 	else if (playerOneWeapon5.countDown >= 20)
-		ctx.strokeText(": 3", canvasWidth - 10, canvasHeight - 10);
+		ctx.fillText(": 3", canvasWidth - 10, canvasHeight - 10);
 	else if (playerOneWeapon5.countDown >= 10)
-		ctx.strokeText(": 2", canvasWidth - 10, canvasHeight - 10);
+		ctx.fillText(": 2", canvasWidth - 10, canvasHeight - 10);
 	else if (playerOneWeapon5.countDown >= 0)
-		ctx.strokeText(": 1", canvasWidth - 10, canvasHeight - 10);
+		ctx.fillText(": 1", canvasWidth - 10, canvasHeight - 10);
 	else
-		ctx.strokeText(": 0", canvasWidth - 10, canvasHeight - 10);
+		ctx.fillText(": 0", canvasWidth - 10, canvasHeight - 10);
 }
 
 function displayP2ShotsLeft() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#c61aff";
-  ctx.fillRect(canvasWidth - 20 - canvasWidth * (1 / 30) - (canvasWidth * (3 / 40)), canvasHeight - canvasWidth * (1 / 30) - 10, canvasWidth * (1 / 30), canvasWidth * (1 / 30));
-	ctx.font = canvasWidth * (1/20) + "px Arial Black";
-	ctx.strokeStyle="#009973";
+  ctx.fillRect(canvasWidth - 5 - canvasWidth * (1 / 30) - (canvasWidth * (3 / 40)), canvasHeight - canvasWidth * (1 / 30) - 10, canvasWidth * (1 / 30), canvasWidth * (1 / 30));
+	ctx.font = canvasWidth * (1/20) + "px Helvetica";
+	ctx.fillStyle="#009973";
 	ctx.lineWidth = canvasWidth * (1/400);
 	ctx.textAlign = "left";
 	if (playerTwoWeapon5.countDown == 40)
-		ctx.strokeText(": 5", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+		ctx.fillText(": 5", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
 	else if (playerTwoWeapon5.countDown >= 30)
-		ctx.strokeText(": 4", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+		ctx.fillText(": 4", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
 	else if (playerTwoWeapon5.countDown >= 20)
-		ctx.strokeText(": 3", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+		ctx.fillText(": 3", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
 	else if (playerTwoWeapon5.countDown >= 10)
-		ctx.strokeText(": 2", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+		ctx.fillText(": 2", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
 	else if (playerTwoWeapon5.countDown >= 0)
-		ctx.strokeText(": 1", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+		ctx.fillText(": 1", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
 	else
-		ctx.strokeText(": 0", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
+		ctx.fillText(": 0", 20 + canvasWidth * (1 / 30), canvasHeight - 10);
 }
 
 function displayCountDown() {
 	gameArea.clear();
-	ctx.strokeStyle="#000000";
+	ctx.fillStyle="#000000";
 	ctx = gameArea.context;
-	ctx.font = canvasWidth * (1/11) + "px Arial Black";
+	ctx.font = canvasWidth * (1/11) + "px Helvetica";
 	ctx.lineWidth = canvasWidth * (3/500);
 	ctx.textAlign = "center";
-	ctx.strokeText(countDown - 1, canvasWidth / 2, canvasHeight / 2);
+	ctx.fillText(countDown - 1, canvasWidth / 2, canvasHeight / 2);
 }
 
 function displayGoCountDown() {
 	gameArea.clear();
 	ctx = gameArea.context;
-	ctx.font = canvasWidth * (1/11) + "px Arial Black";
+	ctx.font = canvasWidth * (1/11) + "px Helvetica";
 	ctx.lineWidth = canvasWidth * (3/500);
 	ctx.textAlign = "center";
-	ctx.strokeText("GO!", canvasWidth / 2, canvasHeight / 2);
+	ctx.fillText("GO!", canvasWidth / 2, canvasHeight / 2);
 }
 
 function runWin(winningChar, winString, colorA, colorB, colorC) {
@@ -572,17 +579,17 @@ function runWin(winningChar, winString, colorA, colorB, colorC) {
 		gameSong.pause();
 		winSong.play();
 	}
-	ctx.font = canvasWidth * (1/11) + "px Arial Black";
+	ctx.font = canvasWidth * (1/11) + "px Helvetica";
 	createGradient(colorA, colorB, colorC);
-	ctx.strokeStyle = gradient;
+	ctx.fillStyle = gradient;
 	ctx.lineWidth = canvasWidth * (3/500);
 	ctx.textAlign = "center";
-	ctx.strokeText(winString + " WINS", canvasWidth / 2, canvasHeight / 2);
-	ctx.font = canvasWidth * (1/15) + "px Arial Black";
+	ctx.fillText(winString + " WINS", canvasWidth / 2, canvasHeight / 2);
+	ctx.font = canvasWidth * (1/15) + "px Helvetica";
 	ctx.lineWidth = canvasWidth * (2/500);
-	ctx.strokeStyle = "#000000";
+	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
-	ctx.strokeText("PRESS R TO RESTART", canvasWidth / 2, canvasHeight * (3 / 4));
+	ctx.fillText("PRESS R TO RESTART", canvasWidth / 2, canvasHeight * (3 / 4));
 	if (gameArea.keys && gameArea.keys[resetButton]) {
 	  	resetGame();
 	}
@@ -600,17 +607,17 @@ function runTie(winningChar, winString, colorA, colorB, colorC) {
 		gameSong.pause();
 		tieSong.play();
 	}
-	ctx.font = canvasWidth * (1/11) + "px Arial Black";
+	ctx.font = canvasWidth * (1/11) + "px Helvetica";
 	createGradient(colorA, colorB, colorC);
-	ctx.strokeStyle = gradient;
+	ctx.fillStyle = gradient;
 	ctx.lineWidth = canvasWidth * (3/500);
 	ctx.textAlign = "center";
-	ctx.strokeText(winString + " WINS", canvasWidth / 2, canvasHeight / 2);
-	ctx.font = canvasWidth * (1/15) + "px Arial Black";
+	ctx.fillText(winString + " WINS", canvasWidth / 2, canvasHeight / 2);
+	ctx.font = canvasWidth * (1/15) + "px Helvetica";
 	ctx.lineWidth = canvasWidth * (2/500);
-	ctx.strokeStyle = "#000000";
+	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
-	ctx.strokeText("PRESS R TO RESTART", canvasWidth / 2, canvasHeight * (3 / 4));
+	ctx.fillText("PRESS R TO RESTART", canvasWidth / 2, canvasHeight * (3 / 4));
 	if (gameArea.keys && gameArea.keys[resetButton]) {
 	  	resetGame();
 	}
@@ -620,7 +627,7 @@ function runTie(winningChar, winString, colorA, colorB, colorC) {
 }
 
 function resetGame() {
-	ctx.strokeStyle="#000000";
+	ctx.fillStyle="#000000";
 	resetCanvas();
 	initial();
 }
