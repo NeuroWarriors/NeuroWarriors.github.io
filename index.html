@@ -17,6 +17,8 @@ var gradient;
 
 var beginGame = 1;
 
+var onlyFirst = 1;
+
 var playerTie = 0;
 
 var startKey = 32; 
@@ -39,6 +41,8 @@ var menuSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s07I
 var gameSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s18d07piT8yC.mp3");
 var winSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s1S9acvItyVG.mp3");
 var tieSong = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0ehxVi71Rqu.mp3");
+var countDownSound = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s14DbP5yJmgU.mp3");
+var shootSound = new Audio("http://s0.vocaroo.com/media/download_temp/Vocaroo_s0jvLZB0cAq2.mp3");
 
 menuSong.loop = true;
 
@@ -46,7 +50,7 @@ var runOnce = 1;
 var wasteTime = 1;
 
 var gameClock = 30;
-var gameClockCount = 29;
+var gameClockCount = 15;
 
 var resetButton = 82;
 var runReset = false;
@@ -147,10 +151,12 @@ var playerTwoWeapon5;
 function resetCanvas() {
 	runOnce = 1;
 	
+	onlyFirst = 1;
+	
 	wasteTime = 1;
 	
 	gameClock = 30;
-	gameClockCount = 29;
+	gameClockCount = 15;
 	
 	resetButton = 82;
   runReset = false;
@@ -292,6 +298,11 @@ function canvasObject(width, height, color, x, y, isDead, hasWon, isShot, initDi
 function updateGameArea() {
   gameArea.clear();
   if (beginGame == 0) {
+  	if(onlyFirst == 1) {
+  		countDownSound.currentTime = 0;
+	  	countDownSound.play();
+	  	onlyFirst = 0;
+  	}
 	  if (countDown > 1) {
 	  	menuSong.pause();
 	  	winSong.pause();
@@ -301,6 +312,8 @@ function updateGameArea() {
 	  		countDownCount -= 1;
 	  	}
 	  	else {
+	  		countDownSound.currentTime = 0;
+	  		countDownSound.play();
 	  		countDown -= 1;
 	  		countDownCount = 20;
 	  	}
@@ -645,29 +658,41 @@ function initialShootWeapon(weaponObject, playerControl, controlLeft, controlRig
 		if (gameArea.keys && gameArea.keys[shootKey]) {
 			if (playerControl.initDir == "left") {
 		  	weaponObject.initDir = "left";
-		  	if (weaponObject.countDown == 0)
-		  		weaponObject.isShot = true;
+		  	if (weaponObject.countDown == 0) {
+		  		shootSound.currentTime = 0;
+	  			shootSound.play();
+	  			weaponObject.isShot = true;
+		  	}
 		  	weaponObject.countDown -= 1;
 		  	playerControl.weaponCount -= 1;
 		  }
 		  if (playerControl.initDir == "right") {
 		  	weaponObject.initDir = "right";
-		  	if (weaponObject.countDown == 0)
-		  		weaponObject.isShot = true;
+		  	if (weaponObject.countDown == 0) {
+		  		shootSound.currentTime = 0;
+	  			shootSound.play();
+	  			weaponObject.isShot = true;
+		  	}
 		  	weaponObject.countDown -= 1;
 		  	playerControl.weaponCount -= 1;
 		  }
 		  if (playerControl.initDir == "up") {
 		  	weaponObject.initDir = "up";
-		  	if (weaponObject.countDown == 0)
-		  		weaponObject.isShot = true;
+		  	if (weaponObject.countDown == 0) {
+		  		shootSound.currentTime = 0;
+	  			shootSound.play();
+	  			weaponObject.isShot = true;
+		  	}
 		  	weaponObject.countDown -= 1;
 		  	playerControl.weaponCount -= 1;
 		  }
 		  if (playerControl.initDir == "down") {
 				weaponObject.initDir = "down";
-				if (weaponObject.countDown == 0)
-		  		weaponObject.isShot = true;
+				if (weaponObject.countDown == 0) {
+		  		shootSound.currentTime = 0;
+	  			shootSound.play();
+	  			weaponObject.isShot = true;
+		  	}
 		  	weaponObject.countDown -= 1;
 				playerControl.weaponCount -= 1;
 		  }
